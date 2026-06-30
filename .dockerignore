@@ -35,7 +35,6 @@ coverage.xml
 
 # Documentation
 docs/
-*.md
 
 # CI/CD
 .github/
@@ -67,11 +66,9 @@ tmp/
 temp/
 
 # README and licenses
-README.md
 LICENCE
 
 # Development config
-pyproject.toml
 setup.py
 setup.cfg
 tox.ini

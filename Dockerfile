@@ -4,6 +4,17 @@ FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    musl-dev \
+    libjpeg-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libfreetype6-dev \
+    libssl-dev \
+    libffi-dev
+
 COPY pyproject.toml README.md ./
 COPY src/ ./src
 

@@ -26,7 +26,8 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    def test_validate_active_session_no_cached_session(self, app_context, mock_redis):
+    @patch('src.customer_service.resources.customer.redis_client')
+    def test_validate_active_session_no_cached_session(self, mock_redis, app_context):
         """Test session validation fails when session not in Redis"""
         from src.customer_service.resources.customer import validate_active_session
         
@@ -37,7 +38,8 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    def test_validate_active_session_invalid_session_data(self, app_context, mock_redis):
+    @patch('src.customer_service.resources.customer.redis_client')
+    def test_validate_active_session_invalid_session_data(self, mock_redis, app_context):
         """Test session validation fails with invalid cached data"""
         from src.customer_service.resources.customer import validate_active_session
         
@@ -48,7 +50,8 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    def test_validate_active_session_token_mismatch(self, app_context, mock_redis):
+    @patch('src.customer_service.resources.customer.redis_client')
+    def test_validate_active_session_token_mismatch(self, mock_redis, app_context):
         """Test session validation fails when token doesn't match"""
         from src.customer_service.resources.customer import validate_active_session
         
@@ -60,7 +63,8 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    def test_validate_active_session_success(self, app_context, mock_redis):
+    @patch('src.customer_service.resources.customer.redis_client')
+    def test_validate_active_session_success(self, mock_redis, app_context):
         """Test successful session validation"""
         from src.customer_service.resources.customer import validate_active_session
         

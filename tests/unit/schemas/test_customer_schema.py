@@ -185,16 +185,16 @@ class TestCustomerSchemaSerialization:
         self.schema = CustomerSchema()
     
     def test_dump_only_fields(self):
-        """Test that customer_id and user_id are dump_only"""
+        """Test that customer_id and user_id are dump_only (rejected on load)"""
         data = {
             "customer_no": "CUST001",
             "customer_id": 999,
             "user_id": 999
         }
-        result = self.schema.load(data)
-        # dump_only fields should not be in load result
-        assert "customer_id" not in result or result.get("customer_id") != 999
-        assert "user_id" not in result or result.get("user_id") != 999
+        # Loading dump_only fields should raise ValidationError
+        with pytest.raises(ValidationError) as exc_info:
+            self.schema.load(data)
+        assert "customer_id" in str(exc_info.value) or "user_id" in str(exc_info.value)
 
 
 class TestCustomerSchemaPartialUpdate:

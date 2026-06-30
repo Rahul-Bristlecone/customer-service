@@ -1,0 +1,25 @@
+[coverage:run]
+branch = True
+source = src
+omit =
+    */site-packages/*
+    */tests/*
+    */__pycache__/*
+
+[coverage:report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+    pass
+precision = 2
+show_missing = True
+skip_covered = False
+
+[coverage:html]
+directory = htmlcov

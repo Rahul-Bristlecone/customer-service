@@ -1,0 +1,78 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+docs/
+*.md
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Local development
+.env.local
+.env.*.local
+local_settings.py
+
+# OS
+Thumbs.db
+
+# Node (if applicable)
+node_modules/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose.*.yml
+
+# Jenkins
+Jenkinsfile
+
+# Temp files
+tmp/
+temp/
+
+# README and licenses
+README.md
+LICENCE
+
+# Development config
+pyproject.toml
+setup.py
+setup.cfg
+tox.ini
+Makefile

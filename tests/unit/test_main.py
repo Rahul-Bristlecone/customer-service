@@ -12,7 +12,7 @@ class TestAppFactory:
     
     def test_create_app_returns_flask_app(self, mock_db, mock_redis):
         """Test that create_app returns a Flask app instance"""
-        from src.customer_service.main import create_app
+        from customer_service.main import create_app
         
         app = create_app()
         assert isinstance(app, Flask)
@@ -117,7 +117,7 @@ class TestAppDatabase:
     
     def test_db_initialized_with_app(self, app_with_context):
         """Test that database is initialized with app"""
-        from src.customer_service.extentions.db import db
+        from customer_service.extentions.db import db
         
         # db should be initialized with the app context
         assert app_with_context is not None
@@ -129,10 +129,10 @@ class TestAppDatabase:
         # SQLite test URI won't have +, but production will
         assert "sqlite" in uri or "+" in uri
     
-    @patch('src.customer_service.extentions.db.db.create_all')
+    @patch('customer_service.extentions.db.db.create_all')
     def test_db_create_all_called(self, mock_create_all, mock_db, mock_redis):
         """Test that db.create_all is called during initialization"""
-        from src.customer_service.main import create_app
+        from customer_service.main import create_app
         
         mock_db.create_all = MagicMock()
         app = create_app()
@@ -177,7 +177,7 @@ class TestAppContext:
     def test_app_context_can_be_created(self, app_with_context):
         """Test that app context can be created"""
         with app_with_context.app_context():
-            from src.customer_service.extentions.db import db
+            from customer_service.extentions.db import db
             assert db is not None
     
     def test_app_test_client_works(self, client):
@@ -217,7 +217,7 @@ class TestAppFactory:
     
     def test_create_app_with_custom_db_url(self, mock_db, mock_redis):
         """Test that create_app accepts custom database URL"""
-        from src.customer_service.main import create_app
+        from customer_service.main import create_app
         
         custom_url = "sqlite:///test.db"
         app = create_app(db_url=custom_url)
@@ -227,7 +227,7 @@ class TestAppFactory:
     
     def test_multiple_app_instances_independent(self, mock_db, mock_redis):
         """Test that multiple app instances are independent"""
-        from src.customer_service.main import create_app
+        from customer_service.main import create_app
         
         app1 = create_app()
         app2 = create_app()
@@ -241,7 +241,7 @@ class TestAppIntegration:
     
     def test_app_with_environment_setup(self, mock_db, mock_redis):
         """Test app creation with full environment setup"""
-        from src.customer_service.main import create_app
+        from customer_service.main import create_app
         
         app = create_app()
         

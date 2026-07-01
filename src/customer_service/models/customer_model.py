@@ -1,4 +1,4 @@
-from src.customer_service.extentions.db import db
+from customer_service.extentions.db import db
 
 # docker exec -it customer-service bash
 # python -m alembic revision --autogenerate -m "Added new column"

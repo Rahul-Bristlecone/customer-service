@@ -3,7 +3,7 @@ Tests for customer_model.py
 """
 import pytest
 from sqlalchemy import inspect
-from src.customer_service.models.customer_model import CustomerModel
+from customer_service.models.customer_model import CustomerModel
 
 
 class TestCustomerModelStructure:

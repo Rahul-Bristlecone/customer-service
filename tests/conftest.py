@@ -2,10 +2,18 @@
 Shared fixtures and configuration for all tests.
 """
 import os
+import sys
+from pathlib import Path
 import pytest
 import json
 from unittest.mock import MagicMock, patch
 from datetime import timedelta
+
+# Ensure `customer_service` package is importable from `src/` when running pytest.
+ROOT_DIR = Path(__file__).resolve().parents[1]
+SRC_DIR = ROOT_DIR / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
 
 # Set environment variables before importing the app
 os.environ.setdefault("MYSQL_USER", "test_user")
@@ -22,7 +30,7 @@ os.environ.setdefault("REDIS_PASSWORD", "")
 @pytest.fixture
 def mock_redis():
     """Mock Redis client"""
-    with patch("src.customer_service.extentions.redis_client.redis_client") as mock:
+    with patch("customer_service.extentions.redis_client.redis_client") as mock:
         mock.get = MagicMock()
         mock.set = MagicMock()
         mock.delete = MagicMock()
@@ -32,7 +40,7 @@ def mock_redis():
 @pytest.fixture
 def mock_db():
     """Mock SQLAlchemy database"""
-    with patch("src.customer_service.extentions.db.db") as mock:
+    with patch("customer_service.extentions.db.db") as mock:
         mock.session = MagicMock()
         mock.create_all = MagicMock()
         yield mock
@@ -41,7 +49,7 @@ def mock_db():
 @pytest.fixture
 def app_with_context(mock_db, mock_redis):
     """Create Flask app for testing with mocked database"""
-    from src.customer_service.main import create_app
+    from customer_service.main import create_app
     
     app = create_app(db_url="sqlite:///:memory:")
     

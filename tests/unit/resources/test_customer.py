@@ -12,7 +12,7 @@ class TestValidateActiveSession:
     
     def test_validate_active_session_missing_auth_header(self, app_context):
         """Test session validation fails without auth header"""
-        from src.customer_service.resources.customer import validate_active_session
+        from customer_service.resources.customer import validate_active_session
         
         with app_context.test_request_context(headers={}):
             with pytest.raises(Exception):
@@ -20,16 +20,16 @@ class TestValidateActiveSession:
     
     def test_validate_active_session_invalid_token_format(self, app_context):
         """Test session validation fails with invalid token format"""
-        from src.customer_service.resources.customer import validate_active_session
+        from customer_service.resources.customer import validate_active_session
         
         with app_context.test_request_context(headers={"Authorization": "InvalidFormat"}):
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    @patch('src.customer_service.resources.customer.redis_client')
+    @patch('customer_service.resources.customer.redis_client')
     def test_validate_active_session_no_cached_session(self, mock_redis, app_context):
         """Test session validation fails when session not in Redis"""
-        from src.customer_service.resources.customer import validate_active_session
+        from customer_service.resources.customer import validate_active_session
         
         mock_redis.get.return_value = None
         token = create_access_token(identity=1)
@@ -38,10 +38,10 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    @patch('src.customer_service.resources.customer.redis_client')
+    @patch('customer_service.resources.customer.redis_client')
     def test_validate_active_session_invalid_session_data(self, mock_redis, app_context):
         """Test session validation fails with invalid cached data"""
-        from src.customer_service.resources.customer import validate_active_session
+        from customer_service.resources.customer import validate_active_session
         
         mock_redis.get.return_value = "invalid json"
         token = create_access_token(identity=1)
@@ -50,10 +50,10 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    @patch('src.customer_service.resources.customer.redis_client')
+    @patch('customer_service.resources.customer.redis_client')
     def test_validate_active_session_token_mismatch(self, mock_redis, app_context):
         """Test session validation fails when token doesn't match"""
-        from src.customer_service.resources.customer import validate_active_session
+        from customer_service.resources.customer import validate_active_session
         
         cached_session = {"token": "different_token", "user_id": 1}
         mock_redis.get.return_value = json.dumps(cached_session)
@@ -63,10 +63,10 @@ class TestValidateActiveSession:
             with pytest.raises(Exception):
                 validate_active_session(1)
     
-    @patch('src.customer_service.resources.customer.redis_client')
+    @patch('customer_service.resources.customer.redis_client')
     def test_validate_active_session_success(self, mock_redis, app_context):
         """Test successful session validation"""
-        from src.customer_service.resources.customer import validate_active_session
+        from customer_service.resources.customer import validate_active_session
         
         token = create_access_token(identity=1)
         cached_session = {"token": token, "user_id": 1}
@@ -80,10 +80,10 @@ class TestValidateActiveSession:
 class TestGetUserCustomerOr404:
     """Test the get_user_customer_or_404 helper function"""
     
-    @patch('src.customer_service.resources.customer.CustomerModel')
+    @patch('customer_service.resources.customer.CustomerModel')
     def test_get_user_customer_found(self, mock_model, app_context):
         """Test retrieving existing customer"""
-        from src.customer_service.resources.customer import get_user_customer_or_404
+        from customer_service.resources.customer import get_user_customer_or_404
         
         mock_customer = MagicMock()
         mock_customer.customer_id = 1
@@ -95,10 +95,10 @@ class TestGetUserCustomerOr404:
             customer = get_user_customer_or_404(1, 1)
             assert customer.customer_id == 1
     
-    @patch('src.customer_service.resources.customer.CustomerModel')
+    @patch('customer_service.resources.customer.CustomerModel')
     def test_get_user_customer_not_found(self, mock_model, app_context):
         """Test 404 when customer not found"""
-        from src.customer_service.resources.customer import get_user_customer_or_404
+        from customer_service.resources.customer import get_user_customer_or_404
         
         mock_model.query.filter_by.return_value.first.return_value = None
         
@@ -110,13 +110,13 @@ class TestGetUserCustomerOr404:
 class TestCreateCustomerFromPayload:
     """Test the create_customer_from_payload helper function"""
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.CustomerModel')
-    @patch('src.customer_service.resources.customer.db')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.CustomerModel')
+    @patch('customer_service.resources.customer.db')
     def test_create_customer_success(self, mock_db, mock_model_class, mock_jwt, mock_validate, app_context):
         """Test successful customer creation"""
-        from src.customer_service.resources.customer import create_customer_from_payload
+        from customer_service.resources.customer import create_customer_from_payload
         
         mock_jwt.return_value = "1"
         mock_validate.return_value = None
@@ -130,12 +130,12 @@ class TestCreateCustomerFromPayload:
             assert mock_db.session.add.called
             assert mock_db.session.commit.called
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.db')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.db')
     def test_create_customer_integrity_error(self, mock_db, mock_jwt, mock_validate, app_context):
         """Test handling of IntegrityError during creation"""
-        from src.customer_service.resources.customer import create_customer_from_payload
+        from customer_service.resources.customer import create_customer_from_payload
         from sqlalchemy.exc import IntegrityError
         
         mock_jwt.return_value = "1"
@@ -149,12 +149,12 @@ class TestCreateCustomerFromPayload:
                 create_customer_from_payload({"customer_no": "CUST001"})
             assert mock_db.session.rollback.called
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.db')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.db')
     def test_create_customer_sqlalchemy_error(self, mock_db, mock_jwt, mock_validate, app_context):
         """Test handling of SQLAlchemyError during creation"""
-        from src.customer_service.resources.customer import create_customer_from_payload
+        from customer_service.resources.customer import create_customer_from_payload
         from sqlalchemy.exc import SQLAlchemyError
         
         mock_jwt.return_value = "1"
@@ -172,10 +172,10 @@ class TestCreateCustomerFromPayload:
 class TestCreateCustomerEndpoint:
     """Test POST /create_customer endpoint"""
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.db')
-    @patch('src.customer_service.resources.customer.CustomerModel')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.db')
+    @patch('customer_service.resources.customer.CustomerModel')
     def test_create_customer_success(self, mock_model_class, mock_db, mock_jwt, mock_validate,
                                     client, valid_token, mock_redis):
         """Test successful customer creation"""
@@ -202,9 +202,9 @@ class TestCreateCustomerEndpoint:
 class TestGetCustomerEndpoint:
     """Test GET /customer/<customer_id> endpoint"""
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.get_user_customer_or_404')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.get_user_customer_or_404')
     def test_get_customer_success(self, mock_get_customer, mock_jwt, mock_validate,
                                  client, valid_token, mock_redis):
         """Test successful customer retrieval"""
@@ -231,10 +231,10 @@ class TestGetCustomerEndpoint:
 class TestUpdateCustomerEndpoint:
     """Test PUT /customer/<customer_id> endpoint"""
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.get_user_customer_or_404')
-    @patch('src.customer_service.resources.customer.db')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.get_user_customer_or_404')
+    @patch('customer_service.resources.customer.db')
     def test_update_customer_success(self, mock_db, mock_get_customer, mock_jwt, mock_validate,
                                     client, valid_token, mock_redis):
         """Test successful customer update"""
@@ -257,9 +257,9 @@ class TestUpdateCustomerEndpoint:
         )
         assert response.status_code in [200, 422, 401]
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.get_user_customer_or_404')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.get_user_customer_or_404')
     def test_update_customer_cannot_change_customer_no(self, mock_get_customer, mock_jwt, mock_validate,
                                                       client, valid_token, mock_redis):
         """Test that customer_no cannot be updated"""
@@ -284,10 +284,10 @@ class TestUpdateCustomerEndpoint:
 class TestDeleteCustomerEndpoint:
     """Test DELETE /customer/<customer_id> endpoint"""
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.get_user_customer_or_404')
-    @patch('src.customer_service.resources.customer.db')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.get_user_customer_or_404')
+    @patch('customer_service.resources.customer.db')
     def test_delete_customer_success(self, mock_db, mock_get_customer, mock_jwt, mock_validate,
                                     client, valid_token, mock_redis):
         """Test successful customer deletion"""
@@ -310,9 +310,9 @@ class TestDeleteCustomerEndpoint:
 class TestGetCustomersListEndpoint:
     """Test GET /customers endpoint"""
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.CustomerModel')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.CustomerModel')
     def test_get_customers_success(self, mock_model, mock_jwt, mock_validate,
                                   client, valid_token, mock_redis):
         """Test successful customers list retrieval"""
@@ -336,9 +336,9 @@ class TestGetCustomersListEndpoint:
         response = client.get('/customers')
         assert response.status_code in [401, 422]
     
-    @patch('src.customer_service.resources.customer.validate_active_session')
-    @patch('src.customer_service.resources.customer.get_jwt_identity')
-    @patch('src.customer_service.resources.customer.CustomerModel')
+    @patch('customer_service.resources.customer.validate_active_session')
+    @patch('customer_service.resources.customer.get_jwt_identity')
+    @patch('customer_service.resources.customer.CustomerModel')
     def test_get_customers_empty_list(self, mock_model, mock_jwt, mock_validate,
                                      client, valid_token, mock_redis):
         """Test customers list when no customers exist"""

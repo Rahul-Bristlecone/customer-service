@@ -11,12 +11,12 @@ class TestDatabaseExtension:
     
     def test_db_is_sqlalchemy_instance(self):
         """Test that db is a SQLAlchemy instance"""
-        from src.customer_service.extentions.db import db
+        from customer_service.extentions.db import db
         assert isinstance(db, SQLAlchemy)
     
     def test_db_can_be_initialized_with_app(self, app_context):
         """Test that db can be initialized with Flask app"""
-        from src.customer_service.extentions.db import db
+        from customer_service.extentions.db import db
         
         # db should already be initialized with the app in the fixture
         assert db is not None
@@ -24,7 +24,7 @@ class TestDatabaseExtension:
     @patch('flask_sqlalchemy.SQLAlchemy.init_app')
     def test_db_init_app_called(self, mock_init_app, app_context):
         """Test that init_app can be called on db"""
-        from src.customer_service.extentions.db import db
+        from customer_service.extentions.db import db
         
         # The db.init_app should have been called
         # This verifies the pattern used in main.py
@@ -54,13 +54,13 @@ class TestDatabaseSession:
     
     def test_db_session_exists(self, app_context):
         """Test that db.session exists"""
-        from src.customer_service.extentions.db import db
+        from customer_service.extentions.db import db
         
         assert hasattr(db, 'session')
         assert db.session is not None
     
     def test_db_model_exists(self, app_context):
         """Test that db.Model is available"""
-        from src.customer_service.extentions.db import db
+        from customer_service.extentions.db import db
         
         assert hasattr(db, 'Model')

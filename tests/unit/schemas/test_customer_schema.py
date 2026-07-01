@@ -3,7 +3,7 @@ Tests for customer_schema.py
 """
 import pytest
 from marshmallow import ValidationError
-from src.customer_service.schemas.customer_schema import CustomerSchema
+from customer_service.schemas.customer_schema import CustomerSchema
 
 
 class TestCustomerSchemaValidation:

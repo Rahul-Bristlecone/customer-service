@@ -17,8 +17,8 @@ class TestRedisClientInitialization:
             mock_redis_class.return_value = MagicMock()
             # Reimport to test initialization
             import importlib
-            import src.customer_service.extentions.redis_client
-            importlib.reload(src.customer_service.extentions.redis_client)
+            import customer_service.extentions.redis_client
+            importlib.reload(customer_service.extentions.redis_client)
     
     def test_redis_client_default_host(self):
         """Test that Redis client uses default host if not configured"""

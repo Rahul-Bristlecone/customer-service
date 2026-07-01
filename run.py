@@ -1,4 +1,4 @@
-from src.customer_service.main import create_app
+from customer_service.main import create_app
 
 app = create_app()
 

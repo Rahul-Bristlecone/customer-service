@@ -8,11 +8,11 @@ from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 from flask_cors import CORS
 
-from src.customer_service.extentions.db import db
+from customer_service.extentions.db import db
 
 # Import all models to register them with SQLAlchemy
-from src.customer_service.models.customer_model import CustomerModel
-from src.customer_service.resources.customer import blp as CustomerBp
+from customer_service.models.customer_model import CustomerModel
+from customer_service.resources.customer import blp as CustomerBp
 
 # This is called factory pattern
 

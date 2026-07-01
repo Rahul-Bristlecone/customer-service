@@ -5,10 +5,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_smorest import Blueprint, abort
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
-from src.customer_service.extentions.db import db
-from src.customer_service.extentions.redis_client import redis_client
-from src.customer_service.models.customer_model import CustomerModel
-from src.customer_service.schemas.customer_schema import CustomerSchema
+from customer_service.extentions.db import db
+from customer_service.extentions.redis_client import redis_client
+from customer_service.models.customer_model import CustomerModel
+from customer_service.schemas.customer_schema import CustomerSchema
 
 # Create blueprint for Customers
 blp = Blueprint("customers", __name__, description="Operations on customers")
